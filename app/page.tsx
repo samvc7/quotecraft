@@ -1,5 +1,7 @@
 import Image from "next/image";
 import { ModeToggle } from "../components/theme-toggle";
+import Quote from "../components/quote";
+import { fetchRandomQuote } from "./action";
 
 export default async function Home() {
   const randomQuote = await fetchRandomQuote();
@@ -17,21 +19,7 @@ export default async function Home() {
           priority
         />
       </div>
-
-      <div className="flex justify-center items-center flex-grow">
-        <div className="rounded-3xl border-2 border-gray-200 p-24">
-          <p>{randomQuote.content}</p>
-          <p className="mt-4 text-right">— {randomQuote.author}</p>
-          <p className="mt-8">
-            {randomQuote.tags.map((tag: string) => `#${tag} `)}
-          </p>
-        </div>
-      </div>
+      <Quote initialQuote={randomQuote} />
     </main>
   );
 }
-
-const fetchRandomQuote = async () => {
-  const response = await fetch("https://api.quotable.io/random");
-  return response.json();
-};
