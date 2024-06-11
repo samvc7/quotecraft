@@ -43,30 +43,29 @@ export default function Quote({ initialQuote }: QuoteProps) {
 
   return (
     <div className="flex flex-col justify-center items-center flex-grow gap-10">
-      <Input
-        onChange={(event) => searchQuote(event.target.value)}
-        placeholder="Search"
-      />
-      <div className="rounded-3xl border-2 border-gray-200 p-24">
-        <div className="flex gap-4">
-          <blockquote className="text-lg">
-            <p>{quote.content}</p>
-            <footer className="mt-2">
-              <cite className="mt-4 text-right block">- {quote.author}</cite>
-            </footer>
-            <p className="mt-8">
-              {quote.tags.map((tag: string) => `#${tag} `)}
-            </p>
-          </blockquote>
-          <Button
-            className="self-center"
-            onClick={search ? () => searchQuote(search) : fetchRandomQuote}
-            variant="outline"
-            size="icon"
-          >
-            <ChevronRight className="h-4 w-4" />
-          </Button>
-        </div>
+      <div className="w-full flex justify-between">
+        <Input
+          className="w-80 justify-self-end"
+          onChange={(event) => searchQuote(event.target.value)}
+          placeholder="Search"
+        />
+        <Button
+          className="self-center"
+          onClick={search ? () => searchQuote(search) : fetchRandomQuote}
+          variant="outline"
+          size="icon"
+        >
+          <ChevronRight className="h-4 w-4" />
+        </Button>
+      </div>
+      <div className="rounded-3xl border-2 border-gray-200 p-24 w-[1000px]">
+        <blockquote className="text-lg">
+          <p>{quote.content}</p>
+          <footer className="mt-2">
+            <cite className="mt-4 text-right block">- {quote.author}</cite>
+          </footer>
+          <p className="mt-8">{quote.tags.map((tag: string) => `#${tag} `)}</p>
+        </blockquote>
       </div>
     </div>
   );
