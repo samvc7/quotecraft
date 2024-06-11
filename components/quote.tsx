@@ -28,7 +28,7 @@ export default function Quote({ initialQuote }: QuoteProps) {
     if (!query) return;
 
     const response = await fetch(
-      `${SEARCH_QUOTES_ENDPOINT}?query=${query}&limit=150`,
+      `${SEARCH_QUOTES_ENDPOINT}?query=${query}&limit=150&fuzzyMaxEdit=2`,
       {
         cache: "no-store",
       }
