@@ -9,7 +9,6 @@ export default async function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center p-14">
       <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <ModeToggle />
         <Image
           className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
           src="/next.svg"
@@ -18,6 +17,7 @@ export default async function Home() {
           height={37}
           priority
         />
+        <ModeToggle />
       </div>
       <Quote initialQuote={randomQuote} />
     </main>
