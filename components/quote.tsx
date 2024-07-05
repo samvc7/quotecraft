@@ -2,7 +2,7 @@
 
 import { ChevronRight } from "lucide-react";
 import { Button } from "./ui/button";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Input } from "./ui/input";
 import { Skeleton } from "./ui/skeleton";
 
@@ -19,9 +19,35 @@ export default function Quote({ initialQuote }: QuoteProps) {
   const [quoteContainerHeight, setQuoteContainerHeight] = useState<number>(0);
   const quoteContainerRef = useRef<HTMLDivElement>(null);
 
+  const debounceSearch = useDebounce(search, 600);
+
+  const searchQuote = useCallback(async (query: string) => {
+    if (!query) {
+      fetchRandomQuote();
+      return;
+    }
+
+    setIsLoading(true);
+    const response = await fetch(
+      `${SEARCH_QUOTES_ENDPOINT}?query=${query}&limit=150&fuzzyMaxEdit=2`,
+      {
+        cache: "no-store",
+      }
+    );
+    const data = (await response.json()).results as RandomQuote[];
+    if (data.length === 0) return;
+
+    const randomQuote = data[Math.floor(Math.random() * data.length)];
+    setQuote(randomQuote);
+    setIsLoading(false);
+  }, []);
+
+  useEffect(() => {
+    searchQuote(debounceSearch);
+  }, [searchQuote, debounceSearch]);
+
   useEffect(() => {
     if (quoteContainerRef.current) {
-      quoteContainerRef.current;
       setQuoteContainerHeight(quoteContainerRef.current.offsetHeight);
     }
   }, [quote, isLoading]);
@@ -37,26 +63,7 @@ export default function Quote({ initialQuote }: QuoteProps) {
     setIsLoading(false);
   };
 
-  const searchQuote = async (query: string) => {
-    if (!query) {
-      fetchRandomQuote();
-      return;
-    }
-    setIsLoading(true);
-    const response = await fetch(
-      `${SEARCH_QUOTES_ENDPOINT}?query=${query}&limit=150&fuzzyMaxEdit=2`,
-      {
-        cache: "no-store",
-      }
-    );
-    const data = (await response.json()).results as RandomQuote[];
-    if (data.length === 0) return;
-
-    const randomQuote = data[Math.floor(Math.random() * data.length)];
-    setQuote(randomQuote);
-    setSearch(query);
-    setIsLoading(false);
-  };
+  const handleSearchOnChange = (value: string) => setSearch(value);
 
   const quoteContainerSizeStyles = "w-[1020px] rounded-3xl";
 
@@ -65,7 +72,7 @@ export default function Quote({ initialQuote }: QuoteProps) {
       <div className="absolute top-6 left-0 flex justify-between w-full">
         <Input
           className="w-96"
-          onChange={(event) => searchQuote(event.target.value)}
+          onChange={(event) => handleSearchOnChange(event.target.value)}
           placeholder="e.g. Technology, Life, Love"
         />
         <Button
@@ -101,6 +108,20 @@ export default function Quote({ initialQuote }: QuoteProps) {
     </section>
   );
 }
+
+const useDebounce = (value: string, delay: number) => {
+  const [debouncedValue, setDebouncedValue] = useState<string>(value);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => clearTimeout(timeout);
+  }, [value, delay]);
+
+  return debouncedValue;
+};
 
 type QuoteProps = {
   initialQuote: RandomQuote;
