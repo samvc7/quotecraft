@@ -2,7 +2,7 @@
 
 import { ChevronRight } from "lucide-react";
 import { Button } from "./ui/button";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Input } from "./ui/input";
 import { Skeleton } from "./ui/skeleton";
 
@@ -16,6 +16,15 @@ export default function Quote({ initialQuote }: QuoteProps) {
   const [quote, setQuote] = useState<RandomQuote>(initialQuote);
   const [search, setSearch] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [quoteContainerHeight, setQuoteContainerHeight] = useState<number>(0);
+  const quoteContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (quoteContainerRef.current) {
+      quoteContainerRef.current;
+      setQuoteContainerHeight(quoteContainerRef.current.offsetHeight);
+    }
+  }, [quote, isLoading]);
 
   const fetchRandomQuote = async () => {
     setIsLoading(true);
@@ -49,6 +58,8 @@ export default function Quote({ initialQuote }: QuoteProps) {
     setIsLoading(false);
   };
 
+  const quoteContainerSizeStyles = "w-[1020px] rounded-3xl";
+
   return (
     <section className="flex flex-col justify-center flex-grow gap-10 relative mx-auto mt-10">
       <div className="absolute top-6 left-0 flex justify-between w-full">
@@ -67,9 +78,15 @@ export default function Quote({ initialQuote }: QuoteProps) {
         </Button>
       </div>
       {isLoading ? (
-        <Skeleton className="h-[350px] w-[1020px] rounded-3xl" />
+        <Skeleton
+          className={`${quoteContainerSizeStyles}`}
+          style={{ height: quoteContainerHeight }}
+        />
       ) : (
-        <div className="rounded-3xl border-2 border-gray-200 p-24 w-[1020px]">
+        <div
+          ref={quoteContainerRef}
+          className={`${quoteContainerSizeStyles} border-2 border-gray-200 p-24`}
+        >
           <blockquote className="text-lg">
             <p>{quote.content}</p>
             <footer className="mt-2">
