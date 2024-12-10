@@ -5,20 +5,22 @@ import { Button } from "./ui/button";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Input } from "./ui/input";
 import { Skeleton } from "./ui/skeleton";
+import { useToast } from "../hooks/use-toast";
 
 export const QUOTE_API_BASE_URL = "https://quoteslate.vercel.app/api";
 export const RANDOM_QUOTES_ENDPOINT = `${QUOTE_API_BASE_URL}/quotes/random`;
-export const SEARCH_QUOTES_ENDPOINT = `${QUOTE_API_BASE_URL}/search/quotes`;
 
 // TODO: with server action and revalidate path is not working atm.
 // currently using this state and inner fetch function
 export default function Quote({ initialQuote }: QuoteProps) {
+  const { toast } = useToast();
+
   const [quote, setQuote] = useState<RandomQuote | undefined>(initialQuote);
   const [search, setSearch] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [quoteContainerHeight, setQuoteContainerHeight] = useState<number>(0);
-  const quoteContainerRef = useRef<HTMLDivElement>(null);
 
+  const quoteContainerRef = useRef<HTMLDivElement>(null);
   const debounceSearch = useDebounce(search, 600);
 
   const searchQuote = useCallback(async (query: string) => {
@@ -28,18 +30,19 @@ export default function Quote({ initialQuote }: QuoteProps) {
     }
 
     setIsLoading(true);
-    const response = await fetch(
-      `${SEARCH_QUOTES_ENDPOINT}?query=${query}&limit=150&fuzzyMaxEdit=2`,
-      {
-        cache: "no-store",
-      }
-    );
-    const data = (await response.json()).results as RandomQuote[];
-    if (data.length === 0) return;
+    const response = await fetch(`${RANDOM_QUOTES_ENDPOINT}?tags=${query}`);
+    const data = (await response.json()) as RandomQuote | { error: string };
 
-    // const randomQuote = data[Math.floor(Math.random() * data.length)];
-    const randomQuote = data[0];
+    if ("error" in data) {
+      toast({ title: "Error", description: data.error });
+      setIsLoading(false);
+      setQuote(undefined);
+      return;
+    }
+
+    const randomQuote = data;
     setQuote(randomQuote);
+
     setIsLoading(false);
   }, []);
 
@@ -55,16 +58,22 @@ export default function Quote({ initialQuote }: QuoteProps) {
 
   const fetchRandomQuote = async () => {
     setIsLoading(true);
-    const response = await fetch(RANDOM_QUOTES_ENDPOINT, {
-      cache: "no-store",
-    });
-    const data = (await response.json()) as RandomQuote[];
+    const response = await fetch(RANDOM_QUOTES_ENDPOINT);
+    const data = (await response.json()) as RandomQuote;
 
-    setQuote(data[0]);
+    setQuote(data);
     setIsLoading(false);
   };
 
-  const handleSearchOnChange = (value: string) => setSearch(value);
+  const handleSearchOnChange = (value: string) => {
+    const valuesWithoutEmptyValues = value
+      .trim()
+      .split(",")
+      .map((val) => val.trim())
+      .filter((val) => val);
+    const cleanValue = valuesWithoutEmptyValues.join(",");
+    setSearch(cleanValue);
+  };
 
   const quoteContainerSizeStyles = "w-[1020px] rounded-3xl";
 
