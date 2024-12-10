@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { ModeToggle } from "../components/theme-toggle";
-import Quote from "../components/quote";
+import Quote from "../components/Quote";
 import { fetchRandomQuote } from "./action";
 
 export default async function Home() {

@@ -1,4 +1,4 @@
-import { RandomQuote } from "../components/quote";
+import { RandomQuote } from "../components/Quote";
 
 export const fetchRandomQuote = async () => {
   // TODO: why can I not use the RANDOM_QUOTES_ENDPOINT here?
