@@ -12,23 +12,28 @@ export const RANDOM_QUOTES_ENDPOINT = `${QUOTE_API_BASE_URL}/quotes/random`;
 
 // TODO: with server action and revalidate path is not working atm.
 // currently using this state and inner fetch function
-export default function Quote({ initialQuote, tags }: QuoteProps) {
+export default function Quote({ initialQuote, tags, authors }: QuoteProps) {
   const { toast } = useToast();
 
   const [quote, setQuote] = useState<RandomQuote | undefined>(initialQuote);
-  const [search, setSearch] = useState<string>("");
+  const [searchTags, setSearchTags] = useState<string>("");
+  const [searchAuthors, setSearchAuthors] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const debounceSearch = useDebounce(search, 600);
+  const debounceSearch = useDebounce(searchTags, 600);
+  const debouncedSearchAuthors = useDebounce(searchAuthors, 600);
 
-  const searchQuote = useCallback(async (query: string) => {
-    if (!query) {
+  const searchQuote = useCallback(async (tags: string, authors: string) => {
+    if (!tags && !authors) {
       fetchRandomQuote();
       return;
     }
 
     setIsLoading(true);
-    const response = await fetch(`${RANDOM_QUOTES_ENDPOINT}?tags=${query}`);
+    const tagsQuery = tags ? `tags=${tags}` : "";
+    const authorsQuery = authors ? `authors=${authors}` : "";
+    const mergedQueries = [tagsQuery, authorsQuery].join("&");
+    const response = await fetch(`${RANDOM_QUOTES_ENDPOINT}?${mergedQueries}`);
     const data = (await response.json()) as RandomQuote | { error: string };
 
     if ("error" in data) {
@@ -45,8 +50,8 @@ export default function Quote({ initialQuote, tags }: QuoteProps) {
   }, []);
 
   useEffect(() => {
-    searchQuote(debounceSearch);
-  }, [searchQuote, debounceSearch]);
+    searchQuote(debounceSearch, debouncedSearchAuthors);
+  }, [searchQuote, debounceSearch, debouncedSearchAuthors]);
 
   const fetchRandomQuote = async () => {
     setIsLoading(true);
@@ -59,7 +64,12 @@ export default function Quote({ initialQuote, tags }: QuoteProps) {
 
   const handleTagsSelectChanged = (values: string[]) => {
     const joinedValues = values.join(",");
-    setSearch(joinedValues);
+    setSearchTags(joinedValues);
+  };
+
+  const handleAuthorsSelectChanged = (values: string[]) => {
+    const joinedValues = values.join(",");
+    setSearchAuthors(joinedValues);
   };
 
   return (
@@ -67,10 +77,25 @@ export default function Quote({ initialQuote, tags }: QuoteProps) {
       <div className="absolute top-6 left-0 flex justify-between w-full">
         {/* re-add when fuzzy search is implemented */}
         {/* <SearchFuzzy setSearch={setSearch} /> */}
-        <MultiSelect options={tags} onValueChange={handleTagsSelectChanged} />
+        <div className="flex gap-2">
+          <MultiSelect
+            options={tags}
+            onValueChange={handleTagsSelectChanged}
+            placeholder="Select Tags"
+          />
+          <MultiSelect
+            options={authors}
+            onValueChange={handleAuthorsSelectChanged}
+            placeholder="Select Authors"
+          />
+        </div>
         <Button
           className="self-center"
-          onClick={search ? () => searchQuote(search) : fetchRandomQuote}
+          onClick={
+            searchTags || searchAuthors
+              ? () => searchQuote(searchTags, searchAuthors)
+              : fetchRandomQuote
+          }
           variant="outline"
           size="icon"
         >
@@ -99,6 +124,7 @@ const useDebounce = (value: string, delay: number) => {
 type QuoteProps = {
   initialQuote: RandomQuote;
   tags: MultiSelectProps["options"];
+  authors: MultiSelectProps["options"];
 };
 
 export type RandomQuote = {

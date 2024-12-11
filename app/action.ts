@@ -18,3 +18,11 @@ export const fetchTags = async () => {
   const data = (await response.json()) as string[];
   return data;
 };
+
+export const fetchAuthors = async () => {
+  const response = await fetch(`${QUOTES_BASE_URL}/authors`);
+  const data = (await response.json()) as QuoteSlateAuthors;
+  return data;
+};
+
+export type QuoteSlateAuthors = Record<string, number>;
