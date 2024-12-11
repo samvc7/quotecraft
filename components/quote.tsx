@@ -6,6 +6,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useToast } from "../hooks/use-toast";
 import { QuoteContent } from "./QuoteContent";
 import { MultiSelect, MultiSelectProps } from "./multi-select";
+import { fetchRandomQuote, RandomQuote, searchQuoteBy } from "../app/action";
 
 export const QUOTE_API_BASE_URL = "https://quoteslate.vercel.app/api";
 export const RANDOM_QUOTES_ENDPOINT = `${QUOTE_API_BASE_URL}/quotes/random`;
@@ -20,43 +21,41 @@ export default function Quote({ initialQuote, tags, authors }: QuoteProps) {
   const [searchAuthors, setSearchAuthors] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const debounceSearch = useDebounce(searchTags, 600);
-  const debouncedSearchAuthors = useDebounce(searchAuthors, 600);
+  const debounceSearch = useDebounce(searchTags);
+  const debouncedSearchAuthors = useDebounce(searchAuthors);
 
-  const searchQuote = useCallback(async (tags: string, authors: string) => {
-    if (!tags && !authors) {
-      fetchRandomQuote();
-      return;
-    }
+  const searchQuote = useCallback(
+    async (tags: string, authors: string) => {
+      if (!tags && !authors) {
+        getRandomQuote();
+        return;
+      }
 
-    setIsLoading(true);
-    const tagsQuery = tags ? `tags=${tags}` : "";
-    const authorsQuery = authors ? `authors=${authors}` : "";
-    const mergedQueries = [tagsQuery, authorsQuery].join("&");
-    const response = await fetch(`${RANDOM_QUOTES_ENDPOINT}?${mergedQueries}`);
-    const data = (await response.json()) as RandomQuote | { error: string };
+      setIsLoading(true);
+      const data = await searchQuoteBy(tags, authors);
 
-    if ("error" in data) {
-      toast({ title: "Error", description: data.error });
+      if ("error" in data) {
+        toast({ title: "Error", description: data.error });
+        setIsLoading(false);
+        setQuote(undefined);
+        return;
+      }
+
+      const randomQuote = data;
+      setQuote(randomQuote);
+
       setIsLoading(false);
-      setQuote(undefined);
-      return;
-    }
-
-    const randomQuote = data;
-    setQuote(randomQuote);
-
-    setIsLoading(false);
-  }, []);
+    },
+    [toast]
+  );
 
   useEffect(() => {
     searchQuote(debounceSearch, debouncedSearchAuthors);
   }, [searchQuote, debounceSearch, debouncedSearchAuthors]);
 
-  const fetchRandomQuote = async () => {
+  const getRandomQuote = async () => {
     setIsLoading(true);
-    const response = await fetch(RANDOM_QUOTES_ENDPOINT);
-    const data = (await response.json()) as RandomQuote;
+    const data = await fetchRandomQuote();
 
     setQuote(data);
     setIsLoading(false);
@@ -94,7 +93,7 @@ export default function Quote({ initialQuote, tags, authors }: QuoteProps) {
           onClick={
             searchTags || searchAuthors
               ? () => searchQuote(searchTags, searchAuthors)
-              : fetchRandomQuote
+              : getRandomQuote
           }
           variant="outline"
           size="icon"
@@ -107,7 +106,13 @@ export default function Quote({ initialQuote, tags, authors }: QuoteProps) {
   );
 }
 
-const useDebounce = (value: string, delay: number) => {
+type QuoteProps = {
+  initialQuote: RandomQuote;
+  tags: MultiSelectProps["options"];
+  authors: MultiSelectProps["options"];
+};
+
+const useDebounce = (value: string, delay = 600) => {
   const [debouncedValue, setDebouncedValue] = useState<string>(value);
 
   useEffect(() => {
@@ -119,16 +124,4 @@ const useDebounce = (value: string, delay: number) => {
   }, [value, delay]);
 
   return debouncedValue;
-};
-
-type QuoteProps = {
-  initialQuote: RandomQuote;
-  tags: MultiSelectProps["options"];
-  authors: MultiSelectProps["options"];
-};
-
-export type RandomQuote = {
-  quote: string;
-  author: string;
-  tags: string[];
 };

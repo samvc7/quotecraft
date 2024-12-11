@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { RandomQuote } from "./Quote";
 import { Skeleton } from "./ui/skeleton";
+import { RandomQuote } from "../app/action";
 
 export const QuoteContent = ({
   quote,
