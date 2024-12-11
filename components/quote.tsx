@@ -2,17 +2,17 @@
 
 import { ChevronRight } from "lucide-react";
 import { Button } from "./ui/button";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { Input } from "./ui/input";
+import { useCallback, useEffect, useState } from "react";
 import { useToast } from "../hooks/use-toast";
 import { QuoteContent } from "./QuoteContent";
+import { MultiSelect, MultiSelectProps } from "./multi-select";
 
 export const QUOTE_API_BASE_URL = "https://quoteslate.vercel.app/api";
 export const RANDOM_QUOTES_ENDPOINT = `${QUOTE_API_BASE_URL}/quotes/random`;
 
 // TODO: with server action and revalidate path is not working atm.
 // currently using this state and inner fetch function
-export default function Quote({ initialQuote }: QuoteProps) {
+export default function Quote({ initialQuote, tags }: QuoteProps) {
   const { toast } = useToast();
 
   const [quote, setQuote] = useState<RandomQuote | undefined>(initialQuote);
@@ -57,24 +57,17 @@ export default function Quote({ initialQuote }: QuoteProps) {
     setIsLoading(false);
   };
 
-  const handleSearchOnChange = (value: string) => {
-    const valuesWithoutEmptyValues = value
-      .trim()
-      .split(",")
-      .map((val) => val.trim())
-      .filter((val) => val);
-    const cleanValue = valuesWithoutEmptyValues.join(",");
-    setSearch(cleanValue);
+  const handleTagsSelectChanged = (values: string[]) => {
+    const joinedValues = values.join(",");
+    setSearch(joinedValues);
   };
 
   return (
     <section className="flex flex-col justify-center flex-grow gap-10 relative mx-auto mt-10">
       <div className="absolute top-6 left-0 flex justify-between w-full">
-        <Input
-          className="w-96"
-          onChange={(event) => handleSearchOnChange(event.target.value)}
-          placeholder="e.g. Technology, Life, Love"
-        />
+        {/* re-add when fuzzy search is implemented */}
+        {/* <SearchFuzzy setSearch={setSearch} /> */}
+        <MultiSelect options={tags} onValueChange={handleTagsSelectChanged} />
         <Button
           className="self-center"
           onClick={search ? () => searchQuote(search) : fetchRandomQuote}
@@ -105,6 +98,7 @@ const useDebounce = (value: string, delay: number) => {
 
 type QuoteProps = {
   initialQuote: RandomQuote;
+  tags: MultiSelectProps["options"];
 };
 
 export type RandomQuote = {

@@ -1,10 +1,12 @@
 import Image from "next/image";
 import { ModeToggle } from "../components/theme-toggle";
 import Quote from "../components/Quote";
-import { fetchRandomQuote } from "./action";
+import { fetchRandomQuote, fetchTags } from "./action";
+import { MultiSelectProps } from "../components/multi-select";
 
 export default async function Home() {
   const randomQuote = await fetchRandomQuote();
+  const tags = parseTags(await fetchTags());
 
   return (
     <main className="flex min-h-screen flex-col items-center p-14">
@@ -19,7 +21,11 @@ export default async function Home() {
         />
         <ModeToggle />
       </div>
-      <Quote initialQuote={randomQuote} />
+      <Quote initialQuote={randomQuote} tags={tags} />
     </main>
   );
 }
+
+const parseTags = (tags: string[]): MultiSelectProps["options"] => {
+  return tags.map((tag) => ({ label: tag, value: tag }));
+};
