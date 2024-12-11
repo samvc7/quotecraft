@@ -8,9 +8,6 @@ import { QuoteContent } from "./QuoteContent";
 import { MultiSelect, MultiSelectProps } from "./multi-select";
 import { fetchRandomQuote, RandomQuote, searchQuoteBy } from "../app/action";
 
-export const QUOTE_API_BASE_URL = "https://quoteslate.vercel.app/api";
-export const RANDOM_QUOTES_ENDPOINT = `${QUOTE_API_BASE_URL}/quotes/random`;
-
 // TODO: with server action and revalidate path is not working atm.
 // currently using this state and inner fetch function
 export default function Quote({ initialQuote, tags, authors }: QuoteProps) {
