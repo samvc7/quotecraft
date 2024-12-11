@@ -88,6 +88,7 @@ export default function Quote({ initialQuote, tags, authors }: QuoteProps) {
         </div>
         <Button
           className="self-center"
+          name="Next Quote"
           onClick={
             searchTags || searchAuthors
               ? () => searchQuote(searchTags, searchAuthors)

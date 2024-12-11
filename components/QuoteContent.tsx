@@ -29,19 +29,17 @@ export const QuoteContent = ({
     );
   }
 
+  const centeredStylingWhenNoQuotes = quote.quote.includes("No quotes")
+    ? "text-center"
+    : undefined;
+
   return (
     <div
       ref={quoteContainerRef}
       className={`${quoteContainerSizeStyles} border-2 border-gray-200 p-24`}
     >
       <blockquote className="text-lg">
-        <p
-          className={`${
-            quote.quote.includes("No quotes") ? "text-center" : undefined
-          }`}
-        >
-          {quote.quote}
-        </p>
+        <p className={centeredStylingWhenNoQuotes}>{quote.quote}</p>
         {quote.author && (
           <footer className="mt-2">
             <cite className="mt-4 text-right block">- {quote.author}</cite>
