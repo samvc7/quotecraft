@@ -32,22 +32,25 @@ export default function Quote({ initialQuote, tags, authors }: QuoteProps) {
       }
 
       setIsLoading(true);
+
       const data = await searchQuoteBy(tags, authors);
+      const correctedData =
+        "error" in data ? getCorrectedSearchErrorData(data.error) : data;
 
-      if ("error" in data) {
-        toast({ title: "Error", description: data.error });
-        setIsLoading(false);
-        setQuote(undefined);
-        return;
-      }
-
-      const randomQuote = data;
-      setQuote(randomQuote);
-
+      setQuote(correctedData);
       setIsLoading(false);
     },
     [toast]
   );
+
+  const getCorrectedSearchErrorData = (error: string) => {
+    if (error.includes("No quotes")) {
+      return { quote: "No quotes found", author: "", tags: [] };
+    }
+
+    toast({ title: "Error", description: error });
+    return undefined;
+  };
 
   useEffect(() => {
     searchQuote(debounceSearch, debouncedSearchAuthors);
@@ -62,13 +65,11 @@ export default function Quote({ initialQuote, tags, authors }: QuoteProps) {
   };
 
   const handleTagsSelectChanged = (values: string[]) => {
-    const joinedValues = values.join(",");
-    setSearchTags(joinedValues);
+    setSearchTags(values.join(","));
   };
 
   const handleAuthorsSelectChanged = (values: string[]) => {
-    const joinedValues = values.join(",");
-    setSearchAuthors(joinedValues);
+    setSearchAuthors(values.join(","));
   };
 
   return (

@@ -35,11 +35,21 @@ export const QuoteContent = ({
       className={`${quoteContainerSizeStyles} border-2 border-gray-200 p-24`}
     >
       <blockquote className="text-lg">
-        <p>{quote.quote}</p>
-        <footer className="mt-2">
-          <cite className="mt-4 text-right block">- {quote?.author}</cite>
-        </footer>
-        <p className="mt-8">{quote.tags.map((tag: string) => `#${tag} `)}</p>
+        <p
+          className={`${
+            quote.quote.includes("No quotes") ? "text-center" : undefined
+          }`}
+        >
+          {quote.quote}
+        </p>
+        {quote.author && (
+          <footer className="mt-2">
+            <cite className="mt-4 text-right block">- {quote.author}</cite>
+          </footer>
+        )}
+        {quote.tags.length > 0 && (
+          <p className="mt-8">{quote.tags.map((tag: string) => `#${tag} `)}</p>
+        )}
       </blockquote>
     </div>
   );
