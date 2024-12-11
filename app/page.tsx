@@ -35,7 +35,10 @@ export default async function Home() {
 const parseTagsToMultiSelectOptions = (
   tags: string[]
 ): MultiSelectProps["options"] => {
-  return tags.map((tag) => ({ label: tag, value: tag }));
+  return tags.map((tag) => ({
+    label: tag.charAt(0).toUpperCase() + tag.slice(1),
+    value: tag,
+  }));
 };
 
 const parseAuthorsToMultiselectOptions = (
