@@ -7,6 +7,7 @@ import { useToast } from "../hooks/use-toast";
 import { QuoteContent } from "./quote-content";
 import { MultiSelect, MultiSelectProps } from "./multi-select";
 import { fetchRandomQuote, RandomQuote, searchQuoteBy } from "../app/action";
+import { AuthorOption, SelectAuthor } from "./select-author";
 
 // TODO: with server action and revalidate path is not working atm.
 // currently using this state and inner fetch function
@@ -68,8 +69,8 @@ export default function Quote({ initialQuote, tags, authors }: QuoteProps) {
     setSearchTags(values.join(","));
   };
 
-  const handleAuthorsSelectChanged = (values: string[]) => {
-    setSearchAuthors(values.join(","));
+  const handleAuthorsSelectChanged = (value: string) => {
+    setSearchAuthors(value === "none" ? "" : value);
   };
 
   return (
@@ -83,10 +84,10 @@ export default function Quote({ initialQuote, tags, authors }: QuoteProps) {
             onValueChange={handleTagsSelectChanged}
             placeholder="Select Tags"
           />
-          <MultiSelect
+          <SelectAuthor
             options={authors}
+            value={searchAuthors}
             onValueChange={handleAuthorsSelectChanged}
-            placeholder="Select Authors"
           />
         </div>
         <Button
@@ -111,7 +112,7 @@ export default function Quote({ initialQuote, tags, authors }: QuoteProps) {
 type QuoteProps = {
   initialQuote: RandomQuote;
   tags: MultiSelectProps["options"];
-  authors: MultiSelectProps["options"];
+  authors: AuthorOption[];
 };
 
 const useDebounce = (value: string, delay = 600) => {
