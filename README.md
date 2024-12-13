@@ -7,7 +7,7 @@ In a world filled with challenges and moments of doubt, this app delivers small 
 Whether you need a boost to start your day or a little encouragement to keep pushing forward, this app is here to help. Enable auto-fetch to let the inspiration flow continuously or manually fetch quotes whenever you need a moment of positivity.
 
 <div align="center">
-[![Inspire Me](https://img.shields.io/badge/Inspire%20Me-Click%20Here-blue)](https://quotecraft-420sqivl8-samvc7s-projects.vercel.app/)
+[Inspire Me](https://quotecraft-420sqivl8-samvc7s-projects.vercel.app/)
 </div>
 
 ---
