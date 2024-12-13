@@ -1,88 +1,88 @@
 import { test, expect } from "@playwright/test";
 
-test("Initial quote", async ({ page }) => {
-  await page.goto("http://localhost:3000");
-  const quote = await page.getByRole("blockquote").textContent();
-  expect(quote).not.toBeNull();
-  expect(quote).not.toBe("");
-});
+test.describe("Quote", () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto("/");
+  });
 
-test("Filter quotes visible", async ({ page }) => {
-  await page.goto("http://localhost:3000");
-  await expect(page.getByRole("button", { name: "Select Tags" })).toBeVisible();
-  await expect(
-    page.getByRole("button", { name: "Select Authors" })
-  ).toBeVisible();
+  test("Initial quote", async ({ page }) => {
+    const quote = await page.getByRole("blockquote").textContent();
+    expect(quote).not.toBeNull();
+    expect(quote).not.toBe("");
+  });
 
-  // When manually adding name to button component, locator is needed here rather than getByRole
-  await expect(page.locator('button[name="Next Quote"]')).toBeVisible();
-});
+  test("Filter quotes visible", async ({ page }) => {
+    await expect(
+      page.getByRole("button", { name: "Select Tags" })
+    ).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Select Authors" })
+    ).toBeVisible();
 
-test("Next quote", async ({ page }) => {
-  await page.goto("http://localhost:3000");
+    // When manually adding name to button component, locator is needed here rather than getByRole
+    await expect(page.locator('button[name="Next Quote"]')).toBeVisible();
+  });
 
-  for (let i = 0; i < 10; i++) {
+  test("Next quote", async ({ page }) => {
+    for (let i = 0; i < 10; i++) {
+      const quoteBefore = await page.getByRole("blockquote").textContent();
+      await page.locator('button[name="Next Quote"]').click();
+      const quoteAfter = await page.getByRole("blockquote").textContent();
+
+      expect(quoteBefore).not.toEqual(quoteAfter);
+    }
+  });
+
+  test("Filter by tags", async ({ page }) => {
+    expect(page.getByRole("button", { name: "Life Love" })).not.toBeVisible();
+
+    await page.getByRole("button", { name: "Select Tags" }).click();
+    await page.getByRole("option", { name: "Life" }).click();
+    await page.getByRole("option", { name: "Love" }).click();
+    await page.getByRole("blockquote").click();
+
+    await expect(page.getByRole("button", { name: "Life Love" })).toBeVisible();
+    await expect(page.getByRole("blockquote")).toContainText("life");
+    await expect(page.getByRole("blockquote")).toContainText("love");
     const quoteBefore = await page.getByRole("blockquote").textContent();
+
     await page.locator('button[name="Next Quote"]').click();
+
+    await expect(page.getByRole("blockquote")).toContainText("life");
+    await expect(page.getByRole("blockquote")).toContainText("love");
     const quoteAfter = await page.getByRole("blockquote").textContent();
 
     expect(quoteBefore).not.toEqual(quoteAfter);
-  }
-});
+  });
 
-test("Filter by tags", async ({ page }) => {
-  await page.goto("http://localhost:3000");
+  test("Filter by authors", async ({ page }) => {
+    expect(page.getByRole("button", { name: "Shakespeare" })).not.toBeVisible();
 
-  expect(page.getByRole("button", { name: "Life Love" })).not.toBeVisible();
+    await page.getByRole("button", { name: "Select Authors" }).click();
+    await page.getByRole("option", { name: "Shakespeare" }).click();
+    await page.getByRole("blockquote").click({ position: { x: 0, y: 0 } });
 
-  await page.getByRole("button", { name: "Select Tags" }).click();
-  await page.getByRole("option", { name: "Life" }).click();
-  await page.getByRole("option", { name: "Love" }).click();
-  await page.getByRole("blockquote").click();
+    await expect(
+      page.getByRole("button", { name: "Shakespeare" })
+    ).toBeVisible();
+    await expect(page.getByRole("blockquote")).toContainText("Shakespeare");
+    const quoteBefore = await page.getByRole("blockquote").textContent();
 
-  await expect(page.getByRole("button", { name: "Life Love" })).toBeVisible();
-  await expect(page.getByRole("blockquote")).toContainText("life");
-  await expect(page.getByRole("blockquote")).toContainText("love");
-  const quoteBefore = await page.getByRole("blockquote").textContent();
+    await page.locator('button[name="Next Quote"]').click();
 
-  await page.locator('button[name="Next Quote"]').click();
+    await expect(page.getByRole("blockquote")).toContainText("Shakespeare");
+    const quoteAfter = await page.getByRole("blockquote").textContent();
 
-  await expect(page.getByRole("blockquote")).toContainText("life");
-  await expect(page.getByRole("blockquote")).toContainText("love");
-  const quoteAfter = await page.getByRole("blockquote").textContent();
+    expect(quoteBefore).not.toEqual(quoteAfter);
+  });
 
-  expect(quoteBefore).not.toEqual(quoteAfter);
-});
+  test("Filter not found", async ({ page }) => {
+    await page.getByRole("button", { name: "Select Tags" }).click();
+    await page.getByRole("option", { name: "Life" }).click();
+    await page.getByRole("option", { name: "Love" }).click();
+    await page.getByRole("option", { name: "Change" }).click();
+    await page.getByRole("blockquote").click();
 
-test("Filter by authors", async ({ page }) => {
-  await page.goto("http://localhost:3000");
-
-  expect(page.getByRole("button", { name: "Shakespeare" })).not.toBeVisible();
-
-  await page.getByRole("button", { name: "Select Authors" }).click();
-  await page.getByRole("option", { name: "Shakespeare" }).click();
-  await page.getByRole("blockquote").click({ position: { x: 0, y: 0 } });
-
-  await expect(page.getByRole("button", { name: "Shakespeare" })).toBeVisible();
-  await expect(page.getByRole("blockquote")).toContainText("Shakespeare");
-  const quoteBefore = await page.getByRole("blockquote").textContent();
-
-  await page.locator('button[name="Next Quote"]').click();
-
-  await expect(page.getByRole("blockquote")).toContainText("Shakespeare");
-  const quoteAfter = await page.getByRole("blockquote").textContent();
-
-  expect(quoteBefore).not.toEqual(quoteAfter);
-});
-
-test("Filter not found", async ({ page }) => {
-  await page.goto("http://localhost:3000");
-
-  await page.getByRole("button", { name: "Select Tags" }).click();
-  await page.getByRole("option", { name: "Life" }).click();
-  await page.getByRole("option", { name: "Love" }).click();
-  await page.getByRole("option", { name: "Change" }).click();
-  await page.getByRole("blockquote").click();
-
-  await expect(page.getByRole("blockquote")).toContainText("No quotes found");
+    await expect(page.getByRole("blockquote")).toContainText("No quotes found");
+  });
 });
