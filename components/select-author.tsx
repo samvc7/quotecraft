@@ -13,11 +13,12 @@ export function SelectAuthor({
   options,
   value,
   onValueChange,
+  placeholder = "Select Author",
 }: SelectAuthorsProps) {
   return (
     <Select value={value || ""} onValueChange={onValueChange}>
-      <SelectTrigger className="w-64">
-        <SelectValue placeholder="Select Authors" />
+      <SelectTrigger name={placeholder} className="w-64">
+        <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>
@@ -37,6 +38,7 @@ type SelectAuthorsProps = {
   options: AuthorOption[];
   value: string;
   onValueChange: (value: string) => void;
+  placeholder?: string;
 };
 
 export type AuthorOption = {

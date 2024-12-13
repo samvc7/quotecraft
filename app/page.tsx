@@ -3,6 +3,7 @@ import { ModeToggle } from "../components/theme-toggle";
 import Quote from "../components/quote";
 import { fetchAuthors, fetchTags, QuoteSlateAuthors } from "./action";
 import { MultiSelectProps } from "../components/multi-select";
+import { AuthorOption } from "../components/select-author";
 
 export default async function Home() {
   const tags = parseTagsToMultiSelectOptions(await fetchTags());
@@ -41,7 +42,7 @@ const parseTagsToMultiSelectOptions = (
 
 const parseAuthorsToMultiSelectOptions = (
   authors: QuoteSlateAuthors | { error: string }
-): MultiSelectProps["options"] => {
+): AuthorOption[] => {
   if ("error" in authors) {
     console.error(authors.error);
     return [];

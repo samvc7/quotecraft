@@ -15,9 +15,7 @@ test.describe("Quote", () => {
     await expect(
       page.getByRole("button", { name: "Select Tags" })
     ).toBeVisible();
-    await expect(
-      page.getByRole("button", { name: "Select Authors" })
-    ).toBeVisible();
+    await expect(page.locator('button[name="Select Author"]')).toBeVisible();
 
     // When manually adding name to button component, locator is needed here rather than getByRole
     await expect(page.locator('button[name="Next Quote"]')).toBeVisible();
@@ -52,15 +50,18 @@ test.describe("Quote", () => {
   });
 
   test("Filter by authors", async ({ page }) => {
-    expect(page.getByRole("button", { name: "Shakespeare" })).not.toBeVisible();
+    expect(page.locator('button[name="Select Author"]')).not.toContainText(
+      "Shakespeare"
+    );
 
-    await page.getByRole("button", { name: "Select Authors" }).click();
-    await page.getByRole("option", { name: "Shakespeare" }).click();
+    await page.locator('button[name="Select Author"]').click();
+
+    await page.getByLabel("Shakespeare").click();
     await page.getByRole("blockquote").click({ position: { x: 0, y: 0 } });
 
-    await expect(
-      page.getByRole("button", { name: "Shakespeare" })
-    ).toBeVisible();
+    expect(page.locator('button[name="Select Author"]')).toContainText(
+      "Shakespeare"
+    );
     await expect(page.getByRole("blockquote")).toContainText("Shakespeare");
 
     await page.locator('button[name="Next Quote"]').click();

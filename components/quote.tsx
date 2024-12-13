@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronRight } from "lucide-react";
+import { RefreshCw, RefreshCwOff, StepForward } from "lucide-react";
 import { Button } from "./ui/button";
 import { useCallback, useEffect, useState } from "react";
 import { useToast } from "../hooks/use-toast";
@@ -8,6 +8,8 @@ import { QuoteContent } from "./quote-content";
 import { MultiSelect, MultiSelectProps } from "./multi-select";
 import { fetchRandomQuote, RandomQuote, searchQuoteBy } from "../app/action";
 import { AuthorOption, SelectAuthor } from "./select-author";
+import { Toggle } from "./ui/toggle";
+import { Skeleton } from "./ui/skeleton";
 
 // TODO: with server action and revalidate path is not working atm.
 // currently using this state and inner fetch function
@@ -18,6 +20,7 @@ export default function Quote({ tags, authors }: QuoteProps) {
   const [searchTags, setSearchTags] = useState<string>("");
   const [searchAuthors, setSearchAuthors] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isAutoNextEnabled, setIsAutoNextEnabled] = useState<boolean>(false);
 
   const debounceSearch = useDebounce(searchTags);
   const debouncedSearchAuthors = useDebounce(searchAuthors);
@@ -57,6 +60,14 @@ export default function Quote({ tags, authors }: QuoteProps) {
     searchQuote(debounceSearch, debouncedSearchAuthors);
   }, [searchQuote, debounceSearch, debouncedSearchAuthors]);
 
+  useEffect(() => {
+    if (!isAutoNextEnabled) return;
+    const interval = setInterval(() => {
+      searchQuote(debounceSearch, debouncedSearchAuthors);
+    }, 10000);
+    return () => clearInterval(interval);
+  }, [debounceSearch, debouncedSearchAuthors, isAutoNextEnabled, searchQuote]);
+
   const getRandomQuote = async () => {
     setIsLoading(true);
     const data = await fetchRandomQuote();
@@ -90,19 +101,39 @@ export default function Quote({ tags, authors }: QuoteProps) {
             onValueChange={handleAuthorsSelectChanged}
           />
         </div>
-        <Button
-          className="self-center"
-          name="Next Quote"
-          onClick={
-            searchTags || searchAuthors
-              ? () => searchQuote(searchTags, searchAuthors)
-              : getRandomQuote
-          }
-          variant="outline"
-          size="icon"
-        >
-          <ChevronRight className="h-4 w-4" />
-        </Button>
+        <div className="flex gap-2">
+          <Toggle
+            className="self-center"
+            name="Auto Next"
+            onClick={() => setIsAutoNextEnabled((prev) => !prev)}
+            variant="outline"
+            size="sm"
+          >
+            {isAutoNextEnabled ? (
+              <RefreshCw className="h-4 w-4" />
+            ) : (
+              <RefreshCwOff className="h-4 w-4" />
+            )}
+          </Toggle>
+
+          <Button
+            className="self-center"
+            name="Next Quote"
+            onClick={
+              searchTags || searchAuthors
+                ? () => searchQuote(searchTags, searchAuthors)
+                : getRandomQuote
+            }
+            variant="outline"
+            size="icon"
+          >
+            {isLoading ? (
+              <Skeleton className="h-4 w-4" />
+            ) : (
+              <StepForward className="h-4 w-4" />
+            )}
+          </Button>
+        </div>
       </div>
       <QuoteContent quote={quote} isLoading={isLoading} />
     </section>
