@@ -1,36 +1,124 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Random Quotes Fetcher App
 
-## Getting Started
+A simple and uplifting app designed to inspire and motivate you. In a world filled with challenges and moments of doubt, this app delivers small yet powerful doses of motivation to brighten your day and keep you going. Each quote serves as a reminder that positivity and encouragement are just a click away.
 
-First, run the development server:
+Whether you need a boost to start your day or a little encouragement to keep pushing forward, this app is here to help. Enable auto-fetch to let the inspiration flow continuously or manually fetch quotes whenever you need a moment of positivity.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Random Quotes**: Fetch a new random quote initially or with a button click.
+- **Auto Fetch**: Enable or disable automatic fetching of new quotes every 10 seconds.
+- **Filter Quotes**: Filter quotes by tags or author. 
+- **Minimal UI**: Clean and user-friendly interface.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## Installation
 
-To learn more about Next.js, take a look at the following resources:
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/samvc7/quotecraft.git
+   ```
+2. Navigate to the project directory:
+    ```bash
+    cd quotecraft
+    ```
+3. Install dependencies:
+    ```bash
+    pnpm install
+    ```
+4. Start the application:
+    ```bash
+    pnpm dev
+    ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Usage
 
-## Deploy on Vercel
+1. Open the app in your browser:
+    ```bash
+    http://localhost:3000
+    ```
+2. **Fetch New Quote**: Click the "Next Quote" button to fetch a new random quote.
+3. **Auto Fetch**: Toggle the auto-fetch button to enable or disable automatic quote fetching.
+4. **Filter Quotes**: Select multiple tags or an author to filter quotes.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Test
+
+While dev server is running run following command:
+- **Headed**:
+    ```bash
+    pnpm e2e
+    ```
+- **Playwright's UI mode**:
+    ```bash
+    pnpm e2e:ui
+    ```
+- **Headless**:
+    ```bash
+    pnpm e2e:cli
+    ```
+- **Report**:
+    ```bash
+    pnpm e2e:report
+    ```
+
+---
+
+## Tech Stack
+
+- **Frontend**: React, Typescipt, TailwindCSS
+- **API**: [QuoteSlate API](https://quoteslate.vercel.app/) or [QuoteSlate Github](https://github.com/Musheer360/QuoteSlate)
+- **Requests**: Fetch API
+- **Tests**: [Playwright](https://playwright.dev/)
+
+---
+
+## Future Enhancements
+
+- Replace API with [Quotable](https://github.com/lukePeavey/quotable) or create own backend
+- Integrate with copy to clipboard feature to allow users to copy paste quotes anywhere.
+- Save Filters to localstorage
+
+---
+
+## Contributing
+
+Contributions are welcome! Please follow these steps:
+
+1. Fork the repository.
+2. Create a feature branch:
+    ```bash
+    git checkout -b feature-name
+    ```
+3. Commit your changes:
+    ```bash
+    git commit -m "Add feature description"
+    ```
+4. Push to branch:
+    ```bash
+    git push origin feature-name
+    ```
+5. Submit a pull request.
+
+---
+
+## License
+This project is licensed under the [MIT License](LICENSE).
+
+---
+
+## Acknowledgments
+
+- [QuoteSlate API](https://quoteslate.vercel.app/)
+
+---
+
+### Author
+
+Developed with ❤️ by Vicente Samuel Cala.
