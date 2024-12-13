@@ -4,7 +4,7 @@ import { ChevronRight } from "lucide-react";
 import { Button } from "./ui/button";
 import { useCallback, useEffect, useState } from "react";
 import { useToast } from "../hooks/use-toast";
-import { QuoteContent } from "./QuoteContent";
+import { QuoteContent } from "./quote-content";
 import { MultiSelect, MultiSelectProps } from "./multi-select";
 import { fetchRandomQuote, RandomQuote, searchQuoteBy } from "../app/action";
 
