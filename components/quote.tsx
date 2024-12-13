@@ -74,8 +74,8 @@ export default function Quote({ initialQuote, tags, authors }: QuoteProps) {
   };
 
   return (
-    <section className="flex flex-col justify-center flex-grow gap-10 relative mx-auto mt-10">
-      <div className="absolute top-6 left-0 flex justify-between w-full">
+    <section className="flex flex-col justify-center flex-grow gap-5 relative mx-auto mt-10 mb-20">
+      <div className="flex justify-between w-full">
         {/* re-add when fuzzy search is implemented */}
         {/* <SearchFuzzy setSearch={setSearch} /> */}
         <div className="flex gap-2">
