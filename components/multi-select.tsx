@@ -135,7 +135,7 @@ export const MultiSelect = React.forwardRef<
       animation = 0,
       maxCount = 3,
       modalPopover = false,
-      asChild = false,
+      asChild = false, // eslint-disable-line @typescript-eslint/no-unused-vars
       className,
       ...props
     },

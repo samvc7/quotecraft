@@ -21,6 +21,18 @@ export default function Quote({ initialQuote, tags, authors }: QuoteProps) {
   const debounceSearch = useDebounce(searchTags);
   const debouncedSearchAuthors = useDebounce(searchAuthors);
 
+  const getCorrectedSearchErrorData = useCallback(
+    (error: string) => {
+      if (error.includes("No quotes")) {
+        return { quote: "No quotes found", author: "", tags: [] };
+      }
+
+      toast({ title: "Error", description: error });
+      return undefined;
+    },
+    [toast]
+  );
+
   const searchQuote = useCallback(
     async (tags: string, authors: string) => {
       if (!tags && !authors) {
@@ -37,17 +49,8 @@ export default function Quote({ initialQuote, tags, authors }: QuoteProps) {
       setQuote(correctedData);
       setIsLoading(false);
     },
-    [toast]
+    [getCorrectedSearchErrorData]
   );
-
-  const getCorrectedSearchErrorData = (error: string) => {
-    if (error.includes("No quotes")) {
-      return { quote: "No quotes found", author: "", tags: [] };
-    }
-
-    toast({ title: "Error", description: error });
-    return undefined;
-  };
 
   useEffect(() => {
     searchQuote(debounceSearch, debouncedSearchAuthors);
