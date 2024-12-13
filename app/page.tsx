@@ -4,6 +4,7 @@ import Quote from "../components/quote";
 import { fetchAuthors, fetchTags, QuoteSlateAuthors } from "./action";
 import { MultiSelectProps } from "../components/multi-select";
 import { AuthorOption } from "../components/select-author";
+import { DescriptionCollapsible } from "../components/description-collapsible";
 
 export default async function Home() {
   const tags = parseTagsToMultiSelectOptions(await fetchTags());
@@ -22,6 +23,8 @@ export default async function Home() {
         />
         <ModeToggle />
       </div>
+      <h1 className="text-4xl font-bold text-center">Quotecraft</h1>
+      <DescriptionCollapsible />
       <Quote tags={tags} authors={authors} />
     </main>
   );
