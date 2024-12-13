@@ -1,16 +1,10 @@
 import Image from "next/image";
 import { ModeToggle } from "../components/theme-toggle";
 import Quote from "../components/quote";
-import {
-  fetchAuthors,
-  fetchRandomQuote,
-  fetchTags,
-  QuoteSlateAuthors,
-} from "./action";
+import { fetchAuthors, fetchTags, QuoteSlateAuthors } from "./action";
 import { MultiSelectProps } from "../components/multi-select";
 
 export default async function Home() {
-  const randomQuote = await fetchRandomQuote();
   const tags = parseTagsToMultiSelectOptions(await fetchTags());
   const authors = parseAuthorsToMultiSelectOptions(await fetchAuthors());
 
@@ -27,7 +21,7 @@ export default async function Home() {
         />
         <ModeToggle />
       </div>
-      <Quote initialQuote={randomQuote} tags={tags} authors={authors} />
+      <Quote tags={tags} authors={authors} />
     </main>
   );
 }

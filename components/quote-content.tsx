@@ -10,7 +10,7 @@ export const QuoteContent = ({
   isLoading: boolean;
 }) => {
   const quoteContainerRef = useRef<HTMLDivElement>(null);
-  const [quoteContainerHeight, setQuoteContainerHeight] = useState<number>(0);
+  const [quoteContainerHeight, setQuoteContainerHeight] = useState<number>(328);
 
   const quoteContainerSizeStyles = "w-[1020px] rounded-3xl";
 

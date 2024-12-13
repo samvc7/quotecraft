@@ -11,10 +11,10 @@ import { AuthorOption, SelectAuthor } from "./select-author";
 
 // TODO: with server action and revalidate path is not working atm.
 // currently using this state and inner fetch function
-export default function Quote({ initialQuote, tags, authors }: QuoteProps) {
+export default function Quote({ tags, authors }: QuoteProps) {
   const { toast } = useToast();
 
-  const [quote, setQuote] = useState<RandomQuote | undefined>(initialQuote);
+  const [quote, setQuote] = useState<RandomQuote | undefined>();
   const [searchTags, setSearchTags] = useState<string>("");
   const [searchAuthors, setSearchAuthors] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -110,7 +110,6 @@ export default function Quote({ initialQuote, tags, authors }: QuoteProps) {
 }
 
 type QuoteProps = {
-  initialQuote: RandomQuote;
   tags: MultiSelectProps["options"];
   authors: AuthorOption[];
 };
