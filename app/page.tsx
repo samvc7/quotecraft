@@ -12,7 +12,7 @@ import { MultiSelectProps } from "../components/multi-select";
 export default async function Home() {
   const randomQuote = await fetchRandomQuote();
   const tags = parseTagsToMultiSelectOptions(await fetchTags());
-  const authors = parseAuthorsToMultiselectOptions(await fetchAuthors());
+  const authors = parseAuthorsToMultiSelectOptions(await fetchAuthors());
 
   return (
     <main className="flex min-h-screen flex-col items-center p-14">
@@ -33,17 +33,25 @@ export default async function Home() {
 }
 
 const parseTagsToMultiSelectOptions = (
-  tags: string[]
+  tags: string[] | { error: string }
 ): MultiSelectProps["options"] => {
+  if ("error" in tags) {
+    console.error(tags.error);
+    return [];
+  }
   return tags.map((tag) => ({
     label: tag.charAt(0).toUpperCase() + tag.slice(1),
     value: tag,
   }));
 };
 
-const parseAuthorsToMultiselectOptions = (
-  authors: QuoteSlateAuthors
+const parseAuthorsToMultiSelectOptions = (
+  authors: QuoteSlateAuthors | { error: string }
 ): MultiSelectProps["options"] => {
+  if ("error" in authors) {
+    console.error(authors.error);
+    return [];
+  }
   return Object.keys(authors).map((author) => ({
     label: author,
     value: author,

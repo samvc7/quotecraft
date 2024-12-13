@@ -8,12 +8,14 @@ export const fetchRandomQuote = async (): Promise<RandomQuote> => {
   return response.json();
 };
 
-export const fetchTags = async (): Promise<string[]> => {
+export const fetchTags = async (): Promise<string[] | { error: string }> => {
   const response = await fetch(TAGS_ENDPOINT);
   return response.json();
 };
 
-export const fetchAuthors = async (): Promise<QuoteSlateAuthors> => {
+export const fetchAuthors = async (): Promise<
+  QuoteSlateAuthors | { error: string }
+> => {
   const response = await fetch(AUTHORS_ENDPOINT);
   return response.json();
 };
@@ -26,9 +28,7 @@ export const searchQuoteBy = async (
   const authorsQuery = authors ? `authors=${authors}` : "";
   const mergedQueries = [tagsQuery, authorsQuery].join("&");
 
-  const response = await fetch(
-    `${QUOTES_BASE_URL}/quotes/random?${mergedQueries}`
-  );
+  const response = await fetch(`${RANDOM_QUOTES_ENDPOINT}?${mergedQueries}`);
   return response.json();
 };
 
