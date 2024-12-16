@@ -12,7 +12,7 @@ export const QuoteContent = ({
   const quoteContainerRef = useRef<HTMLDivElement>(null);
   const [quoteContainerHeight, setQuoteContainerHeight] = useState<number>(328);
 
-  const quoteContainerSizeStyles = "w-[1020px] rounded-3xl";
+  const quoteContainerSizeStyles = "lg:w-[1020px] rounded-3xl";
 
   useEffect(() => {
     if (quoteContainerRef.current) {
@@ -36,7 +36,7 @@ export const QuoteContent = ({
   return (
     <div
       ref={quoteContainerRef}
-      className={`${quoteContainerSizeStyles} border-2 border-gray-200 p-24`}
+      className={`${quoteContainerSizeStyles} border-2 border-gray-200 p-4 lg:p-24`}
     >
       <blockquote className="text-lg">
         <p className={centeredStylingWhenNoQuotes}>{quote.quote}</p>

@@ -17,7 +17,7 @@ export function SelectAuthor({
 }: SelectAuthorsProps) {
   return (
     <Select value={value || ""} onValueChange={onValueChange}>
-      <SelectTrigger name={placeholder} className="w-64">
+      <SelectTrigger name={placeholder} className="lg:w-64">
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>

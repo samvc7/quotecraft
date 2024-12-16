@@ -85,11 +85,11 @@ export default function Quote({ tags, authors }: QuoteProps) {
   };
 
   return (
-    <section className="flex flex-col justify-center flex-grow gap-5 relative mx-auto mt-10 mb-20">
-      <div className="flex justify-between w-full">
+    <section className="flex flex-col justify-center lg:flex-grow gap-5 relative mx-auto lg:mb-20">
+      <div className="flex gap-2 lg:justify-between flex-wrap lg:flex-nowrap">
         {/* re-add when fuzzy search is implemented */}
         {/* <SearchFuzzy setSearch={setSearch} /> */}
-        <div className="flex gap-2">
+        <div className="flex gap-2 w-full">
           <MultiSelect
             options={tags}
             onValueChange={handleTagsSelectChanged}
@@ -101,7 +101,7 @@ export default function Quote({ tags, authors }: QuoteProps) {
             onValueChange={handleAuthorsSelectChanged}
           />
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 ml-auto">
           <Toggle
             className="self-center"
             name="Auto Next"
